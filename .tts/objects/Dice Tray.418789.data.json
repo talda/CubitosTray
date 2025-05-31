@@ -1,0 +1,55 @@
+{
+  "GUID": "418789",
+  "Name": "Custom_Model",
+  "Transform": {
+    "posX": 3.393153,
+    "posY": 0.9639443,
+    "posZ": -2.18783,
+    "rotX": 0.0303407181,
+    "rotY": 359.908356,
+    "rotZ": 0.0299387779,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Nickname": "Dice Tray",
+  "Description": "",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "ColorDiffuse": {
+    "r": 0.04830692,
+    "g": 0.3362364,
+    "b": 0.0369041041
+  },
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": true,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "GridProjection": false,
+  "HideWhenFaceDown": false,
+  "Hands": false,
+  "CustomMesh": {
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1760324810447041706/B2C80352E9326590015A790A96F3510F70157F97/",
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1760324810447020237/4B7C148DD27BE876D6A3083550B8F6A34133BC48/",
+    "NormalURL": "",
+    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1760324810447041706/B2C80352E9326590015A790A96F3510F70157F97/",
+    "Convex": false,
+    "MaterialIndex": 1,
+    "TypeIndex": 0,
+    "CastShadows": true
+  },
+  "LuaScript": "--[[ Lua code for Dice Tray. See documentation: https://api.tabletopsimulator.com/ --]]\n\n-- Import the Dice Tray Library\nlocal DiceTrayLib = require(\"lib.DiceTrayLib\")\n\n-- Track dice in the tray\nlocal diceInTray = {}\n-- Logging flag\nlocal loggingEnabled = false\n\n-- The onLoad event is called after the game save finishes loading\nfunction onLoad()\n    -- Initialize the tray using the library\n    diceInTray, loggingEnabled = DiceTrayLib.initializeTray(self)\n    \n    -- Initialize any needed variables or state\n    Wait.time(function()\n        DiceTrayLib.updateProbabilityDisplay(self, diceInTray, loggingEnabled)\n    end, 1) -- Update probability display after 1 second\nend\n\n-- Function called when the Roll Dice button is clicked\nfunction rollDice()\n    -- Check if logging is enabled via the tray's description (in case it was changed since loading)\n    loggingEnabled = (self.getDescription() == \"log\")\n    \n    -- Use the library to roll dice\n    diceInTray = DiceTrayLib.rollDice(self, diceInTray, loggingEnabled)\nend\n\n-- Called when an object collides with the dice tray\nfunction onCollisionEnter(collision_info)\n    -- Check if logging is enabled via the tray's description (in case it was changed)\n    loggingEnabled = (self.getDescription() == \"log\")\n    \n    -- Use the library to handle collision enter\n    diceInTray = DiceTrayLib.onCollisionEnter(self, collision_info, diceInTray, loggingEnabled)\nend\n\n-- Called when an object stops colliding with the dice tray\nfunction onCollisionExit(collision_info)\n    -- Check if logging is enabled via the tray's description (in case it was changed)\n    loggingEnabled = (self.getDescription() == \"log\")\n    \n    -- Use the library to handle collision exit\n    diceInTray = DiceTrayLib.onCollisionExit(self, collision_info, diceInTray, loggingEnabled)\nend\n\n-- The onUpdate event is called once per frame\nfunction onUpdate()\n    -- Not needed for this implementation\nend\n",
+  "LuaScriptState": "",
+  "XmlUI": "<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->\n<Defaults>\n    <Button fontSize=\"16\" width=\"240\" height=\"60\" />\n    <Text fontSize=\"20\" color=\"#FFFFFF\" outline=\"#000000\" outlineSize=\"1 1\" />\n</Defaults>\n\n<Panel\n    position=\"0 0 0\"\n    rotation=\"0 0 0\"\n    scale=\"1 1 1\"\n    width=\"200\"\n    height=\"100\"\n    color=\"#00000000\">\n    \n    <Text\n        id=\"probabilityText\"\n        text=\"Bust Probability: 0%\"\n        position=\"-500 80 0\"\n        width=\"240\"\n        height=\"30\"\n        alignment=\"MiddleCenter\"\n        tooltip=\"Probability of all dice landing on empty faces when re-rolled\" />\n        \n    <Button\n        id=\"rollButton\"\n        text=\"Roll Dice\"\n        onClick=\"rollDice\"\n        position=\"-500 0 0\"\n        color=\"#CCCCCC\"\n        textColor=\"#000000\"\n        tooltip=\"Roll all dice and sort them\" />\n</Panel>\n"
+}
