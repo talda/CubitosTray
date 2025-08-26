@@ -103,14 +103,46 @@ function DiceTrayLib.rollDice(tray, diceInTray, loggingEnabled)
 
 ### 3. Object Identification Pattern
 
-Dice are identified by their names, which correspond to the number of symbol faces they have:
+Dice are identified by their names using a flexible validation system that supports both single-digit and composite names:
 
 ```lua
+-- Enhanced validation function
+function DiceTrayLib.isDie(nickname)
+    if not nickname or nickname == "" then
+        return false
+    end
+
+    local seenDigits = {}
+    for i = 1, #nickname do
+        local char = nickname:sub(i, i)
+        local digit = tonumber(char)
+
+        if not digit or digit < 1 or digit > 6 then
+            return false
+        end
+
+        if seenDigits[digit] then
+            return false
+        end
+
+        seenDigits[digit] = true
+    end
+
+    return true
+end
+
+-- Usage in dice detection
 local nickname = obj.getName()
-if nickname == "1" or nickname == "2" or nickname == "3" then
+if DiceTrayLib.isDie(nickname) then
     table.insert(dice, obj)
 end
 ```
+
+**Supported Die Names:**
+
+- Single-digit: "1", "2", "3", "4", "5", "6" (number of symbol faces)
+- Multi-digit: "234", "35", "123456" (specific faces with symbols)
+- Invalid: "7", "33", "", "0" (rejected by validation)
 
 ## Data Flow
 
@@ -128,17 +160,31 @@ end
 
 ### 1. Die Face Determination
 
-We determine if a die shows a symbol face by comparing its value to the die's name:
+We determine if a die shows a symbol face using a dual logic system that handles both single-digit and multi-digit names:
 
 ```lua
-local isSymbolFace = (value <= symbolFaceCount)
+local isSymbolFace
+if #nickname == 1 then
+    -- Single digit: use existing logic (value <= symbolFaceCount)
+    local symbolFaceCount = tonumber(nickname)
+    isSymbolFace = (value <= symbolFaceCount)
+else
+    -- Multi digit: check if rolled value is in the string
+    isSymbolFace = string.find(nickname, tostring(value)) ~= nil
+end
 ```
 
-This works because:
+**Single-digit logic:**
 
 - Die "1" has a symbol on face 1 only
 - Die "2" has symbols on faces 1-2
 - Die "3" has symbols on faces 1-3
+
+**Multi-digit logic:**
+
+- Die "234" has symbols on faces 2, 3, 4 only
+- Die "35" has symbols on faces 3, 5 only
+- Die "123456" has symbols on all faces
 
 ### 2. Relative Positioning
 
@@ -192,3 +238,30 @@ This architecture provides:
 - Improved maintainability
 - Reusability across multiple tray instances
 - Easier debugging and extension
+
+### 6. Flexible Validation Pattern
+
+The enhanced die validation system uses a centralized approach:
+
+```lua
+-- Centralized validation with comprehensive rules
+function DiceTrayLib.isDie(nickname)
+    -- Validation logic here
+    return isValid
+end
+
+-- Dual probability calculation
+local symbolFaceCount
+if #nickname == 1 then
+    symbolFaceCount = tonumber(nickname)  -- Single digit
+else
+    symbolFaceCount = #nickname           -- Multi digit
+end
+```
+
+**Benefits:**
+
+- Single source of truth for die validation
+- Easy to extend with new die types
+- Maintains backwards compatibility
+- Consistent validation across all functions

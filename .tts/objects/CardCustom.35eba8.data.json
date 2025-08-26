@@ -1,0 +1,58 @@
+{
+  "GUID": "35eba8",
+  "Name": "CardCustom",
+  "Transform": {
+    "posX": -20.5759125,
+    "posY": 1.51360559,
+    "posZ": 39.7057877,
+    "rotX": -0.00000281928465,
+    "rotY": 89.9999847,
+    "rotZ": -0.000008275438,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Nickname": "",
+  "Description": "",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "ColorDiffuse": {
+    "r": 0.713235259,
+    "g": 0.713235259,
+    "b": 0.713235259
+  },
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": true,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "GridProjection": false,
+  "HideWhenFaceDown": true,
+  "Hands": true,
+  "CardID": 200,
+  "SidewaysCard": true,
+  "CustomDeck": {
+    "2": {
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/2453971853953514947/10F67D9D91C68607C4409535A5138157A34A393A/",
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2453971853953510455/60150C032AB4A43347EEDD279A278E1523A94969/",
+      "NumWidth": 1,
+      "NumHeight": 1,
+      "BackIsHidden": true,
+      "UniqueBack": false,
+      "Type": 0
+    }
+  },
+  "LuaScript": "function onload(saved_data)\r\n    --Loads the tracking for if the game has started yet\r\n    if saved_data ~= \"\" then\r\n        local loaded_data = JSON.decode(saved_data)\r\n        valueData = loaded_data[1]\r\r\n    else\r\n        valueData = \"\"\r\r\n    end\r\n\r\n\r\r\n    self.createInput({\r\n        input_function = \"onInput\",\r\n        function_owner = self,\r\n        label          = \"Write here\",\r\n        alignment      = 3,\r\n        position       = {0,0.4,0},\r\n        rotation       = {0,90,0},\r\r\n        width          = 1300,\r\n        height         = 860,\r\r\n        value          = valueData,\r\n    })\r\nend\r\n\r\nfunction onInput(self, ply, text, selected)\r\n    if not selected then\r\n        valueData = text\r\n        updateSave()\r\n    end\r\nend\r\n\r\nfunction updateSave()\r\n    saved_data = JSON.encode({valueData})\r\n    self.script_state = saved_data\r\nend\r\n",
+  "LuaScriptState": "[\"\\nCustom rule (2/3)\\n\\n5 cubes for 2 players\\n10 cubes for 3-4 players\\n15 cubes for 5-6 players\\n20 cubes for 7-8 players\"]",
+  "XmlUI": ""
+}

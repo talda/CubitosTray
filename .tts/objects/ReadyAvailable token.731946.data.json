@@ -1,0 +1,55 @@
+{
+  "GUID": "731946",
+  "Name": "Custom_Model",
+  "Transform": {
+    "posX": -22.4952145,
+    "posY": 1.02794707,
+    "posZ": -6.188179,
+    "rotX": 0.004009003,
+    "rotY": 180.000015,
+    "rotZ": 180.003433,
+    "scaleX": 0.9517771,
+    "scaleY": 1.22144639,
+    "scaleZ": 0.9517771
+  },
+  "Nickname": "Ready/Available token",
+  "Description": "Flip this token to YES to indicate that you're ready to move on.\n\nSome games instead have you flip this token to NO to indicate that you're no longer available as an option for something.",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "ColorDiffuse": {
+    "r": 0.9999998,
+    "g": 0.992160261,
+    "b": 0.9999998
+  },
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": false,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": false,
+  "GridProjection": false,
+  "HideWhenFaceDown": false,
+  "Hands": false,
+  "CustomMesh": {
+    "MeshURL": "http://pastebin.com/raw.php?i=00YWZ28Y",
+    "DiffuseURL": "http://i.imgur.com/LSBlZZX.png",
+    "NormalURL": "",
+    "ColliderURL": "",
+    "Convex": true,
+    "MaterialIndex": 3,
+    "TypeIndex": 0,
+    "CastShadows": true
+  },
+  "LuaScript": "maginomicon_isReadyToken = true",
+  "LuaScriptState": "",
+  "XmlUI": ""
+}

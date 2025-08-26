@@ -1,6 +1,7 @@
 # Cubitos Dice Rolling Tray
 
 A Tabletop Simulator implementation of a dice rolling tray for the board game Cubitos.
+Mod link: https://steamcommunity.com/sharedfiles/filedetails/?id=3556290779
 
 ## Overview
 

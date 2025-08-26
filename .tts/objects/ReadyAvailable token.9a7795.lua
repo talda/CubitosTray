@@ -1,0 +1,1 @@
+maginomicon_isReadyToken = true

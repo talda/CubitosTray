@@ -14,6 +14,38 @@ DiceTrayLib.MAX_DICE_PER_ROW = 4  -- Maximum number of dice per row
 DiceTrayLib.CHECK_INTERVAL = 0.2  -- How often to check if dice have stopped rolling (in seconds)
 DiceTrayLib.MAX_WAIT_TIME = 5     -- Maximum time to wait for dice to settle (in seconds)
 
+-- Helper function to check if an object is a valid die
+-- Supports both single digits ("1", "2", "3") and composite names ("234", "35")
+function DiceTrayLib.isDie(nickname)
+    -- Check if string is non-empty
+    if not nickname or nickname == "" then
+        return false
+    end
+    
+    -- Track seen digits to prevent duplicates
+    local seenDigits = {}
+    
+    -- Check each character
+    for i = 1, #nickname do
+        local char = nickname:sub(i, i)
+        local digit = tonumber(char)
+        
+        -- Must be a valid face number (1-6)
+        if not digit or digit < 1 or digit > 6 then
+            return false
+        end
+        
+        -- Must not be a duplicate
+        if seenDigits[digit] then
+            return false
+        end
+        
+        seenDigits[digit] = true
+    end
+    
+    return true
+end
+
 -- Custom logging function that only prints if logging is enabled
 function DiceTrayLib.log(message, isLoggingEnabled)
     if isLoggingEnabled then
@@ -38,7 +70,7 @@ function DiceTrayLib.initializeTray(tray)
     
     for _, obj in ipairs(allObjects) do
         local nickname = obj.getName()
-        if nickname == "1" or nickname == "2" or nickname == "3" then
+        if DiceTrayLib.isDie(nickname) then
             -- Check if the die is inside or overlapping with the tray
             local diePos = obj.getPosition()
             local trayPos = tray.getPosition()
@@ -102,10 +134,17 @@ function DiceTrayLib.checkDiceResults(tray, dice, diceInTray, loggingEnabled)
     for _, die in ipairs(dice) do
         local value = die.getValue()
         local nickname = die.getName()
-        local symbolFaceCount = tonumber(nickname)
         
         -- Check if the die landed on a symbol face or empty face
-        local isSymbolFace = (value <= symbolFaceCount)
+        local isSymbolFace
+        if #nickname == 1 then
+            -- Single digit: use existing logic (value <= symbolFaceCount)
+            local symbolFaceCount = tonumber(nickname)
+            isSymbolFace = (value <= symbolFaceCount)
+        else
+            -- Multi digit: check if rolled value is in the string
+            isSymbolFace = string.find(nickname, tostring(value)) ~= nil
+        end
         
         -- Add to appropriate group, organized by die type (nickname)
         if isSymbolFace then
@@ -229,7 +268,7 @@ function DiceTrayLib.onCollisionEnter(tray, collision_info, diceInTray, loggingE
     local obj = collision_info.collision_object
     if obj ~= nil then
         local nickname = obj.getName()
-        if nickname == "1" or nickname == "2" or nickname == "3" then
+        if DiceTrayLib.isDie(nickname) then
             DiceTrayLib.log("Die " .. nickname .. " entered the tray", loggingEnabled)
             -- Add die to the tracking table
             diceInTray[obj.getGUID()] = obj
@@ -249,7 +288,7 @@ function DiceTrayLib.onCollisionExit(tray, collision_info, diceInTray, loggingEn
     local obj = collision_info.collision_object
     if obj ~= nil then
         local nickname = obj.getName()
-        if nickname == "1" or nickname == "2" or nickname == "3" then
+        if DiceTrayLib.isDie(nickname) then
             DiceTrayLib.log("Die " .. nickname .. " exited the tray", loggingEnabled)
             -- Remove die from the tracking table
             diceInTray[obj.getGUID()] = nil
@@ -273,11 +312,19 @@ function DiceTrayLib.updateProbabilityDisplay(tray, diceInTray, loggingEnabled)
         -- Make sure the object still exists
         if obj ~= nil and obj.getGUID ~= nil then
             local nickname = obj.getName()
-            if nickname == "1" or nickname == "2" or nickname == "3" then
+            if DiceTrayLib.isDie(nickname) then
                 table.insert(dice, obj)
                 
                 -- Calculate probability for this die
-                local symbolFaceCount = tonumber(nickname)
+                local symbolFaceCount
+                if #nickname == 1 then
+                    -- Single digit: use the numeric value (existing logic)
+                    symbolFaceCount = tonumber(nickname)
+                else
+                    -- Multi digit: use the string length (new logic)
+                    symbolFaceCount = #nickname
+                end
+                
                 local emptyFaceCount = 6 - symbolFaceCount
                 local emptyFaceProbability = emptyFaceCount / 6
                 

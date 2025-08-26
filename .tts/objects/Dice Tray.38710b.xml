@@ -1,0 +1,32 @@
+<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->
+<Defaults>
+    <Button fontSize="16" width="240" height="60" />
+    <Text fontSize="20" color="#FFFFFF" outline="#000000" outlineSize="1 1" />
+</Defaults>
+
+<Panel
+    position="0 0 0"
+    rotation="0 0 0"
+    scale="1 1 1"
+    width="200"
+    height="100"
+    color="#00000000">
+    
+    <Text
+        id="probabilityText"
+        text="Bust Probability: 0%"
+        position="-500 80 0"
+        width="240"
+        height="30"
+        alignment="MiddleCenter"
+        tooltip="Probability of all dice landing on empty faces when re-rolled" />
+        
+    <Button
+        id="rollButton"
+        text="Roll Dice"
+        onClick="rollDice"
+        position="-500 0 0"
+        color="#CCCCCC"
+        textColor="#000000"
+        tooltip="Roll all dice and sort them" />
+</Panel>

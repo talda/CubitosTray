@@ -6,8 +6,25 @@ We are implementing a dice rolling tray for the board game Cubitos in Tabletop S
 
 1. Roll multiple dice with a single button click
 2. Automatically separate dice based on whether they show symbol faces or empty faces
+3. Support flexible die naming system with both single-digit and composite names
 
 ## Recent Changes
+
+### Enhanced Die Validation System (Aug 26, 2025)
+
+- Replaced hardcoded die name validation with flexible system supporting composite names
+- Implemented enhanced `isDie()` function that validates both single-digit ("1", "2", "3") and multi-digit ("234", "35") names
+- Added comprehensive validation rules:
+  - Each character must be a valid face number (1-6)
+  - No duplicate digits allowed (e.g., "33" is invalid)
+  - Empty strings are rejected
+- Updated face detection logic with dual system:
+  - Single digit: Uses existing logic `(value <= symbolFaceCount)`
+  - Multi digit: Uses string search `string.find(nickname, tostring(value))`
+- Enhanced probability calculation to handle both naming systems:
+  - Single digit: `symbolFaceCount = tonumber(nickname)` (numeric value)
+  - Multi digit: `symbolFaceCount = #nickname` (string length)
+- Maintained full backwards compatibility with existing single-digit dice
 
 ### Bundling Implementation (May 31, 2025)
 
@@ -101,9 +118,14 @@ We are implementing a dice rolling tray for the board game Cubitos in Tabletop S
 
 ### Dice Identification
 
-- Dice are identified by their names ("1", "2", "3")
-- The name represents the number of faces with symbols
-- For example, die "2" has symbols on faces 1-2 and empty faces 3-6
+- Dice are identified by their names with flexible naming system:
+  - Single-digit names ("1", "2", "3"): Number represents faces with symbols (1-3 means symbols on faces 1, 2, 3)
+  - Multi-digit names ("234", "35"): Each digit represents a specific face with a symbol
+- Validation ensures only valid face numbers (1-6) with no duplicates
+- Examples:
+  - "1": Symbol on face 1, empty on faces 2-6
+  - "234": Symbols on faces 2, 3, 4, empty on faces 1, 5, 6
+  - "35": Symbols on faces 3, 5, empty on faces 1, 2, 4, 6
 
 ### Sorting Logic
 
@@ -168,3 +190,7 @@ We are implementing a dice rolling tray for the board game Cubitos in Tabletop S
 - UI element positioning should be relative to game objects for better user experience
 - Attaching UI elements and logic to relevant game objects improves code organization
 - TTS maintains a bundled directory with automatically generated files that should not be manually edited
+- Flexible validation systems provide better extensibility than hardcoded lists
+- Dual logic systems can maintain backwards compatibility while adding new features
+- String manipulation in Lua is effective for parsing composite die names
+- Centralized validation functions improve code maintainability and consistency

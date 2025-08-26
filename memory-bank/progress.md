@@ -2,21 +2,22 @@
 
 ## Current Status
 
-**Status**: Dice sorting improved with organized grid layout, ready for testing
+**Status**: Enhanced die validation system with composite die name support, ready for testing
 
 ## What Works
 
 - ✅ UI button for rolling dice
 - ✅ Button positioned to the left of the dice tray
 - ✅ Button attached to the Dice Tray object
-- ✅ Dice detection based on names
+- ✅ Enhanced dice detection supporting both single-digit and composite names
 - ✅ Dice rolling functionality
-- ✅ Face detection logic
+- ✅ Dual face detection logic (single vs multi-digit names)
 - ✅ Improved sorting logic with organized grid layout
 - ✅ Basic documentation in memory bank
 - ✅ Bust probability display with color coding and automatic updates
 - ✅ Independent dice trays (cloned trays work independently)
 - ✅ Code bundling with library for improved maintainability
+- ✅ Flexible die naming system (supports "1", "234", "35", etc.)
 
 ## What's Left to Build
 
@@ -47,6 +48,7 @@
 | May 31, 2025 | Implemented dynamic dice roll detection                                | ✅ Complete |
 | May 31, 2025 | Made dice trays independent when cloned                                | ✅ Complete |
 | May 31, 2025 | Implemented code bundling with library                                 | ✅ Complete |
+| Aug 26, 2025 | Enhanced die validation system with composite name support             | ✅ Complete |
 | TBD          | Testing and refinement                                                 | ⬜ Pending  |
 | TBD          | Additional features                                                    | ⬜ Pending  |
 
@@ -178,28 +180,77 @@
 - Maintained the collision detection system to properly track dice entering and exiting each tray
 - Used proximity-based detection to find dice that are already in the tray when loading
 
+### Enhanced Die Validation System (Aug 26, 2025)
+
+- Replaced hardcoded die name validation with flexible system supporting composite names
+- Implemented `isDie()` function that validates both single-digit ("1", "2", "3") and multi-digit ("234", "35") names
+- Added validation rules:
+  - Each character must be a valid face number (1-6)
+  - No duplicate digits allowed (e.g., "33" is invalid)
+  - Empty strings are rejected
+- Updated face detection logic with dual system:
+  - Single digit: Uses existing logic `(value <= symbolFaceCount)`
+  - Multi digit: Uses string search `string.find(nickname, tostring(value))`
+- Enhanced probability calculation to handle both naming systems:
+  - Single digit: `symbolFaceCount = tonumber(nickname)` (numeric value)
+  - Multi digit: `symbolFaceCount = #nickname` (string length)
+- Maintained full backwards compatibility with existing single-digit dice
+- Examples of supported die names:
+  - "1": Symbol on face 1, empty on faces 2-6 (83% bust probability)
+  - "234": Symbols on faces 2,3,4, empty on faces 1,5,6 (50% bust probability)
+  - "35": Symbols on faces 3,5, empty on faces 1,2,4,6 (67% bust probability)
+  - "123456": Symbols on all faces (0% bust probability)
+
 ## Testing Notes
 
 ### Test Cases to Verify
 
+#### Single-Digit Die Names (Existing Functionality)
+
 1. Die "1" shows symbol when face 1 is up, empty when faces 2-6 are up
 2. Die "2" shows symbol when faces 1-2 are up, empty when faces 3-6 are up
 3. Die "3" shows symbol when faces 1-3 are up, empty when faces 4-6 are up
-4. All dice are properly detected and rolled
-5. Dice are correctly sorted after rolling
-6. Button is properly positioned relative to the dice tray
-7. Button functionality works when attached to the Dice Tray object
-8. Bust probability display shows correct values and colors for different dice combinations
-   - For example, with one die "1", probability should be 5/6 (83%) and displayed in red
-   - With one die "2", probability should be 4/6 (67%) and displayed in white
-   - With one die "3", probability should be 3/6 (50%) and displayed in white
-   - With one die "1" and one die "2", probability should be 5/6 \* 4/6 (56%) and displayed in white
-   - With three dice "1", probability should be (5/6)³ (58%) and displayed in white
-   - With three dice "3", probability should be (3/6)³ (13%) and displayed in green
-9. Bust probability updates automatically when dice are added or removed from the tray
-   - Add a die to the tray and verify the probability updates
-   - Remove a die from the tray and verify the probability updates
-   - Add multiple dice in sequence and verify the probability updates correctly after each addition
+
+#### Multi-Digit Die Names (New Functionality)
+
+4. Die "234" shows symbol when faces 2, 3, or 4 are up, empty when faces 1, 5, or 6 are up
+5. Die "35" shows symbol when faces 3 or 5 are up, empty when faces 1, 2, 4, or 6 are up
+6. Die "123456" shows symbol on all faces (never empty)
+
+#### Invalid Die Names (Should Be Rejected)
+
+7. Die "7" should be rejected (invalid face number)
+8. Die "33" should be rejected (duplicate digits)
+9. Die "" should be rejected (empty string)
+10. Die "0" should be rejected (invalid face number)
+
+#### System Functionality
+
+11. All valid dice are properly detected and rolled
+12. Dice are correctly sorted after rolling based on their face results
+13. Button is properly positioned relative to the dice tray
+14. Button functionality works when attached to the Dice Tray object
+
+#### Probability Display Testing
+
+15. Bust probability display shows correct values and colors for different dice combinations:
+
+    - Single-digit examples:
+      - Die "1": 5/6 (83%) displayed in red
+      - Die "2": 4/6 (67%) displayed in white
+      - Die "3": 3/6 (50%) displayed in white
+    - Multi-digit examples:
+      - Die "234": 3/6 (50%) displayed in white
+      - Die "35": 4/6 (67%) displayed in white
+      - Die "123456": 0/6 (0%) displayed in green
+    - Mixed combinations:
+      - Die "1" + Die "234": 5/6 \* 3/6 (42%) displayed in white
+      - Three dice "35": (4/6)³ (30%) displayed in white
+
+16. Bust probability updates automatically when dice are added or removed from the tray
+    - Add a die to the tray and verify the probability updates
+    - Remove a die from the tray and verify the probability updates
+    - Add multiple dice in sequence and verify the probability updates correctly after each addition
 
 ## Future Considerations
 
