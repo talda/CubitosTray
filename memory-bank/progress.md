@@ -49,6 +49,7 @@
 | May 31, 2025 | Made dice trays independent when cloned                                | ✅ Complete |
 | May 31, 2025 | Implemented code bundling with library                                 | ✅ Complete |
 | Aug 26, 2025 | Enhanced die validation system with composite name support             | ✅ Complete |
+| Aug 26, 2025 | Added MIT License for open source release                              | ✅ Complete |
 | TBD          | Testing and refinement                                                 | ⬜ Pending  |
 | TBD          | Additional features                                                    | ⬜ Pending  |
 
@@ -200,6 +201,18 @@
   - "234": Symbols on faces 2,3,4, empty on faces 1,5,6 (50% bust probability)
   - "35": Symbols on faces 3,5, empty on faces 1,2,4,6 (67% bust probability)
   - "123456": Symbols on all faces (0% bust probability)
+
+### Open Source Licensing (Aug 26, 2025)
+
+- Added MIT License to make the project open source
+- Created LICENSE file with standard MIT License text and copyright notice for Tal Darom
+- Updated README.md with License and Contributing sections
+- Added license header to main library file (DiceTrayLib.lua)
+- MIT License chosen for maximum adoption and flexibility:
+  - Allows commercial use, modification, and distribution
+  - Requires only attribution
+  - Compatible with most other licenses
+  - Encourages community contributions
 
 ## Testing Notes
 

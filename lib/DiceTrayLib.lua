@@ -1,4 +1,10 @@
---[[ Library for Dice Tray functionality ]]
+--[[
+Library for Dice Tray functionality
+
+MIT License
+Copyright (c) 2025 Tal Darom
+See LICENSE file for full license text.
+]]
 
 local DiceTrayLib = {}
 

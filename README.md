@@ -87,3 +87,11 @@ The tray displays real-time "Bust Probability" (chance all dice land on empty fa
 - **White (21-79%)**: Medium odds
 
 The probability updates automatically when dice are added, removed, or rolled.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request or open an Issue for bugs, feature requests, or improvements.
